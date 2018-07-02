@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pip install --upgrade google-api-python-client google-auth-oauthlib
+pip install --upgrade -r requirements.txt

@@ -4,6 +4,7 @@ https://developers.google.com/api-client-library/python/auth/installed-app#examp
 """
 
 import json
+import os
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -11,8 +12,8 @@ from googleapiclient.discovery import build
 from collections import namedtuple
 
 class GoogleAuthorizedService( object ):
-    client_secrets_file = 'client_secret.json'
-    credentials_file = 'credentials.json'
+    client_secrets_file = os.environ['GOOGLE_CLIENT_SECRETS_FILE']
+    credentials_file = os.environ['GOOGLE_CREDENTIALS_FILE']
 
 
     def __init__( self, api_name=None, api_version=None, scopes=None, **k ):
@@ -21,12 +22,12 @@ class GoogleAuthorizedService( object ):
         self.api_name = api_name
         self.api_version = api_version
         self.scopes = scopes
-        valid_keys = [ 'client_secrets_file',
-                       'credentials_file',
-                     ]
-        for key in valid_keys:
-            if key in k:
-                setattr( self, key, k[key] )
+#        valid_keys = [ 'client_secrets_file',
+#                       'credentials_file',
+#                     ]
+#        for key in valid_keys:
+#            if key in k:
+#                setattr( self, key, k[key] )
         self._get_authenticated_service()
                 
 

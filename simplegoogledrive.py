@@ -30,4 +30,25 @@ class SimpleGoogleDrive( object ):
                )
         query = fmt.format( pfx=pfx, parent=parent )
         results = self.drive.files().list( q=query ).execute()
-        pprint.pprint( results, indent=2 )
+        #pprint.pprint( results, indent=2 )
+        if len( results['files'] ) < 1 :
+            msg = "No files found matching name prefix '{}'".format( pfx )
+            raise UserWarning( msg )
+        elif len( results['files'] ) > 1 :
+            msg = "Multiple files found matching name prefix '{}'".format( pfx )
+            raise UserWarning( msg )
+        info = results['files'][0]
+        self._assert_is_sheet( info )
+        return info
+
+
+    def _assert_is_sheet( self, file_info ):
+        sheet_meta = { 'kind': 'drive#file',
+                       'mimeType': 'application/vnd.google-apps.spreadsheet',
+                     }
+        for k in sheet_meta.keys():
+            if file_info[k] != sheet_meta[k] :
+                msg = "Not a sheet file; File Meta mismatch: '{}'='{}', expected '{}'".format(
+                    k, file_info[k], sheet_meta[k] )
+                raise UserWarning( msg )
+        
