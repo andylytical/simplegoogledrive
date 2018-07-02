@@ -1,11 +1,9 @@
-###
-#  Use a Google Sheet as a Time Series Database
-###
-
 import dateutil.parser
 import functools
 
 class TimeSeriesDB(object):
+    ''' Treat a Google Sheet as a (simple) Time Series Database
+    '''
     primary_column = 'A'
 
     def __init__( self,
@@ -18,19 +16,19 @@ class TimeSeriesDB(object):
         self.sheet_name = sheet_name
         if primary_column:
             self.primary_column = primary_column
-        self.headers = None
+        self._has_header_row = None
         
 
     def has_header_row( self, val=None ):
-        if self.headers is None:
+        if self._has_header_row is None:
             if val is None:
-                val = self.get_dates( start=1, end=1 )
+                val = self._get_dates( start=1, end=1 )
             try:
                 d = dateutil.parser.parse( val )
-                self.headers = False
+                self._has_header_row = False
             except (ValueError) as e:
-                self.headers = True
-        return self.headers
+                self._has_header_row = True
+        return self._has_header_row
 
 
     def timestamps( self ):

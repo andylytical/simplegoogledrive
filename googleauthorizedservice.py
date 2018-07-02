@@ -22,12 +22,6 @@ class GoogleAuthorizedService( object ):
         self.api_name = api_name
         self.api_version = api_version
         self.scopes = scopes
-#        valid_keys = [ 'client_secrets_file',
-#                       'credentials_file',
-#                     ]
-#        for key in valid_keys:
-#            if key in k:
-#                setattr( self, key, k[key] )
         self._get_authenticated_service()
                 
 
