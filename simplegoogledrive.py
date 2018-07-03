@@ -1,6 +1,3 @@
-import os
-import pprint
-
 from googleauthorizedservice import GoogleAuthorizedService
 
 class SimpleGoogleDrive( object ):
@@ -30,7 +27,6 @@ class SimpleGoogleDrive( object ):
                )
         query = fmt.format( pfx=pfx, parent=parent )
         results = self.drive.files().list( q=query ).execute()
-        #pprint.pprint( results, indent=2 )
         if len( results['files'] ) < 1 :
             msg = "No files found matching name prefix '{}'".format( pfx )
             raise UserWarning( msg )

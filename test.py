@@ -4,8 +4,8 @@ import os
 import pprint
 
 sheets_parms = {
-    'parent': os.environ['SHEETS_PARENT_ID'],
-    'pfx': os.environ['SHEETS_NAME_PREFIX'],
+    'parent': os.environ['GOOGLE_DRIVE_FOLDER_ID'],
+    'pfx': os.environ['GOOGLE_SHEETS_NAME_PREFIX'],
 }
 
 g = SimpleGoogleDrive()
@@ -17,7 +17,7 @@ file_info = g.get_sheet_by_name_prefix( **sheets_parms )
 tsdb_parms = {
     'sheets_service': g.sheets,
     'file_id': file_info['id'],
-    'sheet_name': os.environ['TSDB_SHEET_NAME']
+    'sheet_name': os.environ['GOOGLE_SHEETS_SHEET_NAME']
 }
 tsdb = TimeSeriesDB( **tsdb_parms )
 results = tsdb.timestamps()

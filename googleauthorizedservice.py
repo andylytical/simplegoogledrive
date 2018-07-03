@@ -1,7 +1,7 @@
-"""
-Based on the sample at:
-https://developers.google.com/api-client-library/python/auth/installed-app#example
-"""
+###
+#  Based on the sample at:
+#  https://developers.google.com/api-client-library/python/auth/installed-app#example
+###
 
 import json
 import os
@@ -12,8 +12,8 @@ from googleapiclient.discovery import build
 from collections import namedtuple
 
 class GoogleAuthorizedService( object ):
-    client_secrets_file = os.environ['GOOGLE_CLIENT_SECRETS_FILE']
-    credentials_file = os.environ['GOOGLE_CREDENTIALS_FILE']
+    client_secrets_file = os.environ['GOOGLE_AUTH_CLIENT_SECRETS_FILE']
+    credentials_file = os.environ['GOOGLE_AUTH_CREDENTIALS_FILE']
 
 
     def __init__( self, api_name=None, api_version=None, scopes=None, **k ):

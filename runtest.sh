@@ -1,10 +1,12 @@
 #!/bin/bash
 
-export GOOGLE_CLIENT_SECRETS_FILE='client_secrets.json'
-export GOOGLE_CREDENTIALS_FILE='credentials.json'
-export SHEETS_PARENT_ID='1d57i-VAQRbCfLDIb9JCHGI3GPBK8cZ4O'
-export SHEETS_NAME_PREFIX='20180701'
-export TSDB_SHEET_NAME='RIMS Data'
-#export TSDB_PRIMARY_COLUMN='A' # default is A, so don't have to set this
+export GOOGLE_AUTH_CLIENT_SECRETS_FILE='client_secrets.json'
+export GOOGLE_AUTH_CREDENTIALS_FILE='credentials.json'
+export GOOGLE_DRIVE_FOLDER_ID='1d57i-VAQRbCfLDIb9JCHGI3GPBK8cZ4O'
+export GOOGLE_SHEETS_NAME_PREFIX='20180701'
+export GOOGLE_SHEETS_SHEET_NAME='RIMS Data'
+export GOOGLE_SHEETS_TSDB_PRIMARY_COLUMN='A'
+export LOCAL_TSDB_FILE_PATH=''
+export LOCAL_TSDB_FILE_FORMAT=''
 
 python test.py
