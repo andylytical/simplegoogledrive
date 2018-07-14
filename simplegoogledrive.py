@@ -83,6 +83,6 @@ class SimpleGoogleDrive( object ):
             for file in response.get('files', []):
                 if self._assert_is_sheet( file ):
                     result_list.append( file )
-#                print 'Found file: %s (%s)' % (file.get('name'), file.get('id'))
+#                print( 'Found file: %s (%s)' % (file.get('name'), file.get('id')) )
             request = files.list_next( request, response )
         return result_list
