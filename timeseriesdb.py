@@ -1,3 +1,4 @@
+import datetime
 import dateutil.parser
 import functools
 
@@ -16,42 +17,59 @@ class TimeSeriesDB(object):
         self.sheet_name = sheet_name
         if primary_column:
             self.primary_column = primary_column
-        self._has_header_row = None
-        
-
-    def has_header_row( self, val=None ):
-        if self._has_header_row is None:
-            if val is None:
-                val = self._get_dates( start=1, end=1 )
-            try:
-                d = dateutil.parser.parse( val )
-                self._has_header_row = False
-            except (ValueError) as e:
-                self._has_header_row = True
-        return self._has_header_row
 
 
     def timestamps( self ):
-        return self._get_dates()
-
-    def _get_dates( self, start='', end='' ):
-        range_ = "'{name}'!{col}{start}:{col}{end}".format(
+        range_ = "'{name}'!{col}:{col}".format(
             name=self.sheet_name,
-            col=self.primary_column,
-            start=start,
-            end=end
+            col=self.primary_column
             )
+        elems = self._get_values( query=range_, majorDimension='COLUMNS' )
+        # convert to python datetimes, ignore first (header) row
+        return list( map( dateutil.parser.parse, elems[1:] ) )
+
+
+    def headers( self ):
+        range_ = "'{name}'!1:1".format( name=self.sheet_name )
+        return self._get_values( query=range_, majorDimension='ROWS' )
+
+
+    def _get_values( self, query, majorDimension ):
         params = {
             'spreadsheetId': self.file_id,
-            'range': range_,
-            'majorDimension': 'COLUMNS',
+            'range': query,
+            'majorDimension': majorDimension,
         }
         results = self.service.spreadsheets().values().get(**params).execute()
-        values = results['values'][0]
-        # check for, and remove, header row
-        if self.has_header_row( values[0] ):
-            values = values[1:]
-        # create native python datetime from each string value
-        dates = list( map( dateutil.parser.parse, values ) )
-        return dates
-        
+        return results['values'][0]
+
+
+    def append( self, rows ):
+        ''' rows is a list of lists
+            each elem of rows is a list of data values to insert, one per cell
+            data will be interpolated (date strings converted to google dates, etc.)
+            return number of rows inserted
+        '''
+        clean_rows = self.py2js( rows )
+        params = {
+            'spreadsheetId': self.file_id,
+            'body': { 'values': clean_rows },
+            'range': "'{}'!A2".format( self.sheet_name ),
+            'valueInputOption': 'USER_ENTERED',
+        }
+        result = self.service.spreadsheets().values().append( **params ).execute()
+        return result['updates']['updatedRows']
+
+
+    @staticmethod
+    def py2js( val ):
+        ''' Convert Python type to javascript type
+        '''
+        if isinstance( val, dict ):
+            return { k: TimeSeriesDB.py2js( v ) for k,v in val.items() }
+        elif isinstance( val, list ):
+            return [ TimeSeriesDB.py2js( v ) for v in val ]
+        elif isinstance( val, datetime.datetime ):
+            return str( val )
+        else:
+            return val
